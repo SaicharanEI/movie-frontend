@@ -31,3 +31,23 @@ body {
     text-wrap: balance;
   }
 }
+
+.main {
+  background-color: #093545;
+  position: relative;
+  min-height: 100vh;
+}
+
+.main::after {
+  content: "";
+  background-image: url("../../public/Vectors.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  z-index: -1;
+}
