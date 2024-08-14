@@ -4,42 +4,46 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import { showToast } from "../utils/toast";
+import "../globals.css";
 
-export default function SignInForm() {
-  const [email, setEmail] = useState("admin@gmail.com");
-  const [password, setPassword] = useState("12345678");
+function SignInForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   const onSubmit = async (e) => {
-    console.log("test");
     e.preventDefault();
-    console.log(email, password);
+    console.log(email, password, rememberMe);
     try {
-      const response = await axios.post("http://localhost:3009/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_FETCH_URL}/auth/login`,
+        {
+          email,
+          password,
+          rememberMe,
+        }
+      );
       console.log(response);
-      if (response.status === 200) {
+      if (response.data.statusCode === 200) {
         window.localStorage.setItem("token", response.data.access_token);
-        router.replace("/movie-list");
+        router.replace("/");
         showToast("success", response.data.message);
       } else {
-        console.log(response);
+        showToast("error", response.data.message);
       }
     } catch (error) {
-      console.log(error);
+      showToast("error", error.response.data.message);
     }
   };
 
   return (
     <div className="w-full max-w-xs mx-auto flex flex-col items-center justify-center min-h-screen">
       <form className="space-y-6 flex flex-col items-center justify-center">
-        <h1 className="text-[64px]">Sign in</h1>
+        <h1 className="text-[25px] md:text-[42px] font-semibold ">Sign in</h1>
         <input
           className="text-[#FFFFFF] bg-[#224957] w-[300px] h-[45px] rounded-md p-2"
           value={email}
-          id="email"
           placeholder="Email"
           type="text"
           onChange={(e) => setEmail(e.target.value)}
@@ -48,20 +52,23 @@ export default function SignInForm() {
         <input
           className="text-[#FFFFFF] bg-[#224957] w-[300px] h-[45px] rounded-md p-2"
           value={password}
-          id="password"
           placeholder="Password"
           type="password"
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <div className="flex items-center gap-2">
-          <input type="checkbox" name="remember" id="remember" />
-          <label htmlFor="remember">Remember me</label>
-        </div>
+        <label className="main1">
+          <input
+            type="checkbox"
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+          <span className="checkbox-container"></span>
+          Remember me
+        </label>
         <button
           type="submit"
           onClick={(e) => onSubmit(e)}
-          className="bg-[#2BD17E] w-[300px] h-[45px] rounded-md"
+          className="bg-[#2BD17E] w-[300px] h-[45px] rounded-md font-semibold"
         >
           Login
         </button>
@@ -69,3 +76,5 @@ export default function SignInForm() {
     </div>
   );
 }
+
+export default SignInForm;
