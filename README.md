@@ -1,0 +1,4 @@
+- Built using Next v14.0 (https://nextjs.org/)
+- Linted using Eslint - (https://eslint.org/)
+- Git hook for lint and build safety
+- Form validation using (https://www.react-hook-form.com/)
