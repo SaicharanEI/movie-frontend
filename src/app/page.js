@@ -124,11 +124,13 @@ const Movies = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center cursor-pointer group">
+                <div
+                  className="flex items-center cursor-pointer group"
+                  onClick={handleLogout}
+                >
                   <p className="mr-2 hidden md:block">Logout</p>
                   <span className=" relative flex items-center ">
                     <svg
-                      onClick={handleLogout}
                       className="cursor-pointer"
                       width="32"
                       height="32"
