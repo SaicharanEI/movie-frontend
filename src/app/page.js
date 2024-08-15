@@ -30,9 +30,7 @@ const Movies = () => {
           setData(response.data.data);
           setCount(response.data.total);
         }
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) {}
       setLoading(false);
     };
     fetchData();
