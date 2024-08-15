@@ -89,7 +89,7 @@ import { useRouter, usePathname } from "next/navigation";
 // Import the Montserrat font
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["100", "400", "900"],
+  weight: ["100", "400", "600", "900"],
   style: ["normal", "italic"],
 });
 
@@ -110,7 +110,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head></head>
-      <body className="main">
+      <body className={`main ${montserrat.className}`}>
         {children}
         <img src="./Vectors.png" className="main-image" alt="logo" />
       </body>

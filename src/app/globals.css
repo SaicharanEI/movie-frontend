@@ -30,7 +30,7 @@ body {
   background-color: #093545;
   position: relative;
   min-height: 100vh;
-  font-family: "Montserrat";
+  /* font-family: "Montserrat"; */
 }
 
 .content-wrapper {
