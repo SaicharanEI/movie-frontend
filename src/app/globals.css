@@ -18,19 +18,13 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  background-color: #093545;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-.main {
-  background-color: #093545;
-  position: relative;
-  min-height: 100vh;
-  /* font-family: "Montserrat"; */
 }
 
 .content-wrapper {
@@ -51,7 +45,6 @@ body {
 
 .main1 input[type="checkbox"] {
   display: none;
-  /* visibility: none; */
 }
 
 .checkbox-container {

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
 
+import "./globals.css";
 const Movies = () => {
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
@@ -62,14 +63,14 @@ const Movies = () => {
   return (
     <>
       {loading ? (
-        <div className="w-full h-screen flex justify-center items-center">
+        <div className="w-full content-wrapper flex flex-col justify-center items-center">
           <ClipLoader color="#2BD17E" />
         </div>
       ) : (
-        <div>
+        <>
           {data.length === 0 ? (
-            <div className="w-full mx-auto flex flex-col items-center justify-center min-h-screen gap-3">
-              <h1 className="text-[48px] text-center text-[#fff]">
+            <div className="w-full content-wrapper flex flex-col items-center justify-center gap-3">
+              <h1 className="text-xl md:text-4xl text-center text-[#fff]">
                 Your movie list is empty
               </h1>
               <button
@@ -87,7 +88,7 @@ const Movies = () => {
               </button>
             </div>
           ) : (
-            <div className="w-full p-[5%]">
+            <div className="w-full content-wrapper p-[5%] flex flex-col justify-between items-center">
               <div className="w-full flex flex-row justify-between items-center">
                 <div className="flex items-center">
                   <h1 className="text-2xl lg:text-3xl text-white mr-4">
@@ -154,10 +155,10 @@ const Movies = () => {
                   </span>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-12 lg:grid-cols-4 mt-8">
+              <div className="w-full self-start grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-12 lg:grid-cols-4 mt-8">
                 {data.map((movie) => (
                   <div
-                    className="bg-[#092C39] h-96 md:h-[420px] flex flex-col justify-between p-2 rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform"
+                    className="bg-[#092C39] h-80 md:h-[400px] flex flex-col justify-between p-2 rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform"
                     key={movie._id}
                     onClick={() => router.push(`/movie?id=${movie._id}`)}
                   >
@@ -175,7 +176,6 @@ const Movies = () => {
                   </div>
                 ))}
               </div>
-
               <div className="flex flex-col items-center mt-8">
                 <div className="flex gap-2">
                   <button
@@ -216,7 +216,7 @@ const Movies = () => {
               </div>
             </div>
           )}
-        </div>
+        </>
       )}
     </>
   );
