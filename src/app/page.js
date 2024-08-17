@@ -1,45 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
-
+import httpRequest from "./service/service.js";
 import "./globals.css";
 const Movies = () => {
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(8);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const limit = 8;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_FETCH_URL}/movies`,
-          {
-            params: { limit, page },
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        if (response.status === 200) {
-          setData(response.data.data);
-          setCount(response.data.total);
-        }
-      } catch (error) {}
+      const data = await httpRequest(`/movies?limit=${limit}&page=${page}`);
+      if (data) {
+        setData(data?.data);
+        setCount(data?.total);
+      }
       setLoading(false);
     };
     fetchData();
-  }, [page, limit]);
-
-  const handleClickAddMovie = () => {
-    router.push("/movie");
-  };
+  }, [page]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -55,10 +40,6 @@ const Movies = () => {
   };
 
   const totalPages = Math.ceil(count / limit);
-
-  const handlePageChange = (pageNumber) => {
-    setPage(pageNumber);
-  };
 
   return (
     <>
@@ -82,20 +63,20 @@ const Movies = () => {
                   padding: "16px 28px",
                   gap: "5px",
                 }}
-                onClick={handleClickAddMovie}
+                onClick={() => router.push("/movie")}
               >
                 Add a new movie
               </button>
             </div>
           ) : (
-            <div className="w-full content-wrapper p-[5%] flex flex-col justify-between items-center">
+            <div className="w-full content-wrapper p-[5%] flex flex-col items-center">
               <div className="w-full flex flex-row justify-between items-center">
                 <div className="flex items-center">
                   <h1 className="text-2xl lg:text-3xl text-white mr-4">
                     My movies
                   </h1>
                   <span
-                    onClick={handleClickAddMovie}
+                    onClick={() => router.push("/movie")}
                     className="cursor-pointer relative flex items-center group"
                   >
                     <svg
@@ -193,7 +174,7 @@ const Movies = () => {
                   ).map((pageNumber) => (
                     <button
                       key={pageNumber}
-                      onClick={() => handlePageChange(pageNumber)}
+                      onClick={() => setPage(pageNumber)}
                       className={`px-4 py-2 rounded ${
                         pageNumber === page
                           ? "bg-[#2BD17E] text-white"

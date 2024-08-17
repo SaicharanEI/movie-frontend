@@ -1,12 +1,11 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { showToast } from "../utils/toast";
 import { useRouter } from "next/navigation";
 import { MdEdit } from "react-icons/md";
 import { FaArrowLeft } from "react-icons/fa";
 import "../globals.css";
+import httpRequest from "../service/service";
 
 const Movie = () => {
   const [editing, setEditing] = useState(false);
@@ -32,26 +31,11 @@ const Movie = () => {
   }, [image]);
 
   const fetchMovieDetails = async (movieId) => {
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_FETCH_URL}/movies/${movieId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        setValue("title", response.data.title);
-        setValue("publishedYear", response.data.publishedYear);
-        setImageUrl(
-          `${process.env.NEXT_PUBLIC_FETCH_URL}/${response?.data?.image}`
-        );
-      } else {
-        showToast("error", response.message);
-      }
-    } catch (error) {
-      showToast("error", error.message);
+    const data = await httpRequest(`/movies/${movieId}`);
+    if (data) {
+      setValue("title", data?.title);
+      setValue("publishedYear", data?.publishedYear);
+      setImageUrl(`${process.env.NEXT_PUBLIC_FETCH_URL}/${data?.image}`);
     }
   };
 
@@ -70,67 +54,35 @@ const Movie = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("publishedYear", Number(data.publishedYear));
-      if (data.image.length > 0) formData.append("image", data.image[0]);
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_FETCH_URL}/movies`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      if (response.data.status === 201) {
-        showToast("success", response.data.message);
-        reset();
-        setImageUrl(null);
-        router.push("/");
-      } else {
-        showToast("error", response.data.message);
-      }
-    } catch (error) {
-      showToast("error", error.response.data.message);
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("publishedYear", Number(data.publishedYear));
+    if (data.image.length > 0) formData.append("image", data.image[0]);
+    const responseData = await httpRequest(`/movies`, "POST", formData);
+    if (responseData) {
+      router.push("/");
     }
   };
 
   const onUpdate = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("publishedYear", Number(data.publishedYear));
-      if (data.image.length > 0) formData.append("image", data.image[0]);
-
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_FETCH_URL}/movies/${id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (response.data.status === 200) {
-        setValue("title", response.data.data.title);
-        setValue("publishedYear", response.data.data.publishedYear);
-        setImageUrl(
-          `${process.env.NEXT_PUBLIC_FETCH_URL}/${response?.data.data.image}`
-        );
-        showToast("success", response.data.message);
-      } else {
-        showToast("error", response.data.message);
-      }
-    } catch (error) {
-      showToast("error", error.response.data.message);
-    }
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("publishedYear", Number(data.publishedYear));
+    if (data.image.length > 0) formData.append("image", data.image[0]);
+    const responseData = await httpRequest(`/movies/${id}`, "PUT", formData);
+    console.log(responseData, "data");
+    setValue("title", responseData?.data.title);
+    setValue("publishedYear", responseData?.data.publishedYear);
+    setImageUrl(
+      `${process.env.NEXT_PUBLIC_FETCH_URL}/${responseData?.data.image}`
+    );
   };
 
   const onCancel = () => {
+    if (editing) {
+      router.push("/");
+      return;
+    }
     reset();
     setImageUrl(null);
   };
@@ -141,7 +93,7 @@ const Movie = () => {
   };
 
   return (
-    <div className="content-wrapper p-[5%] w-full flex flex-col md:justify-between items-start">
+    <div className="content-wrapper p-[5%] w-full flex flex-col items-start">
       <div className="w-full flex items-center gap-4">
         <FaArrowLeft
           className="mb-3 cursor-pointer"
@@ -207,7 +159,7 @@ const Movie = () => {
                 alt="image"
                 className="h-full w-full object-cover rounded-lg z-0"
               />
-              <div className="absolute cursor-pointer top-0 right-0  shadow-md shadow-white	">
+              <div className="absolute cursor-pointer top-0 right-0  shadow-md shadow-white	 bg-black">
                 <MdEdit size={20} onClick={onClickImage} />
               </div>
             </div>

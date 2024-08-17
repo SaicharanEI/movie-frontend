@@ -74,7 +74,7 @@ function SignInForm() {
             </p>
           )}
         </div>
-        <label className="main1 flex items-center">
+        <label className="remember-me flex items-center">
           <input {...register("rememberMe")} type="checkbox" className="mr-2" />
           <span className="checkbox-container"></span>
           Remember me
