@@ -33,9 +33,9 @@ const Movie = () => {
   const fetchMovieDetails = async (movieId) => {
     const data = await httpRequest(`/movies/${movieId}`);
     if (data) {
-      setValue("title", data?.title);
-      setValue("publishedYear", data?.publishedYear);
-      setImageUrl(`${process.env.NEXT_PUBLIC_FETCH_URL}/${data?.image}`);
+      setValue("title", data?.data.title);
+      setValue("publishedYear", data?.data?.publishedYear);
+      setImageUrl(`${process.env.NEXT_PUBLIC_FETCH_URL}/${data?.data?.image}`);
     }
   };
 
@@ -70,12 +70,13 @@ const Movie = () => {
     formData.append("publishedYear", Number(data.publishedYear));
     if (data.image.length > 0) formData.append("image", data.image[0]);
     const responseData = await httpRequest(`/movies/${id}`, "PUT", formData);
-    console.log(responseData, "data");
-    setValue("title", responseData?.data.title);
-    setValue("publishedYear", responseData?.data.publishedYear);
-    setImageUrl(
-      `${process.env.NEXT_PUBLIC_FETCH_URL}/${responseData?.data.image}`
-    );
+    if (responseData) {
+      setValue("title", responseData?.data.title);
+      setValue("publishedYear", responseData?.data.publishedYear);
+      setImageUrl(
+        `${process.env.NEXT_PUBLIC_FETCH_URL}/${responseData?.data.image}`
+      );
+    }
   };
 
   const onCancel = () => {

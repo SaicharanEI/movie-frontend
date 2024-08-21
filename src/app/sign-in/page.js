@@ -25,7 +25,8 @@ function SignInForm() {
           rememberMe,
         }
       );
-      if (response.data.status === 201) {
+      console.log(response.data);
+      if (response.status === 201) {
         window.localStorage.setItem("token", response.data.access_token);
         router.replace("/");
         showToast("success", response.data.message);

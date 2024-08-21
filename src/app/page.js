@@ -18,8 +18,8 @@ const Movies = () => {
       setLoading(true);
       const data = await httpRequest(`/movies?limit=${limit}&page=${page}`);
       if (data) {
-        setData(data?.data);
-        setCount(data?.total);
+        setData(data?.data?.data);
+        setCount(data?.data?.total);
       }
       setLoading(false);
     };
